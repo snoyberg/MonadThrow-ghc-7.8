@@ -17,8 +17,10 @@ instance MonadThrow SomeException IO where
 class MonadThrow e m => MonadCatch e m | m -> e where
     catchM :: m a -> (e -> m a) -> m a
 
-data MyException = MyException
+data MyException a = MyException
     deriving (Show, Typeable)
-instance Exception MyException
+instance Typeable a => Exception (MyException a)
 
 myFunc = throwM (toException MyException) `catchM` \_ -> return ()
+
+otherFunc = throwIO MyException
